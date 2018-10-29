@@ -67,6 +67,44 @@ def cargar():
         else:
             print('... dale pelotudo en serio')
 
+def cargarEnem():
+    global enemigo
+    cargado = 0
+    while cargado == 0:
+        limpiar()
+        print('Estos son los enemigos que hay:')
+        print(os.listdir(os.path.dirname(__file__) + '/enemigos/'))
+        cargar = input('Cual enemigo queres cargar? ')
+        if cargar != '':
+            print('Cargando...')
+            path = os.path.dirname(__file__) + '/enemigos/{}'.format(cargar)
+            archivo = open(path, 'r')
+            print('INFO DEL ENEMIGO')
+            lineas = archivo.readlines()
+            #Cargo el personaje original
+            enemigo['nombre'] = lineas[0].rstrip('\n')
+            enemigo['edad'] = lineas[1].rstrip('\n')
+            enemigo['vida'] = lineas[2].rstrip('\n')
+            enemigo['escudo'] = lineas[3].rstrip('\n')
+            enemigo['mana'] = lineas[4].rstrip('\n')
+            enemigo['ataque'] = lineas[5].rstrip('\n')
+            enemigo['defensa'] = lineas[6].rstrip('\n')
+            #Cargo el temporal por si se modifica algo en la pelea
+            enemigoTEMP['nombre'] = lineas[0].rstrip('\n')
+            enemigoTEMP['edad'] = lineas[1].rstrip('\n')
+            enemigoTEMP['vida'] = lineas[2].rstrip('\n')
+            enemigoTEMP['escudo'] = lineas[3].rstrip('\n')
+            enemigoTEMP['mana'] = lineas[4].rstrip('\n')
+            enemigoTEMP['ataque'] = lineas[5].rstrip('\n')
+            enemigoTEMP['defensa'] = lineas[6].rstrip('\n')
+
+            print('Nombre: ' + enemigo['nombre'] + '\nEdad: ' + enemigo['edad'] + '\nVida: ' + enemigo['vida'] + '\nEscudo: ' + enemigo['escudo'] + '\nMana: ' + enemigo['mana'] + '\nAtaque: ' + enemigo['ataque'] + '\nDefensa: ' + enemigo['defensa'])
+            archivo.close()
+            print('Listo pibe, ya cargue tu enemigo')
+            cargado = 1
+        else:
+            print('... no pude cargar el enemigo bro')
+
 def crear():
     global personaje
     personaje['nombre'] = ''
@@ -217,13 +255,16 @@ while salir == 0:
     opcion = input('''Que queres hacer con tu personaje?
     - [P]elear
     - [C]argar
+    -  Cargar [E]nemigo
     - [N]uevo personaje
     - [B]orrar
     - [S]alir
        ''')
 
-    if opcion not in "PCNBS" or len(opcion) != 1:
+    if opcion not in "PCENBS" or len(opcion) != 1:
         print('Imposible amigo')
+    elif opcion == 'E':
+        cargarEnem()
     elif opcion == 'P':
         pelear()
     elif opcion == 'C':
