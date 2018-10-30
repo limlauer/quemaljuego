@@ -1,0 +1,29 @@
+{
+    "yonsena": {
+        "nombre": "Yon Sena",
+        "edad": "49",
+        "vida": "90",
+        "escudo": "0",
+        "mana": "20",
+        "ataque": "90",
+        "defensa": "0"
+    },
+    "maiquelyacson": {
+        "nombre": "Maiquel Yacson",
+        "edad": "49",
+        "vida": "90",
+        "escudo": "0",
+        "mana": "100",
+        "ataque": "90",
+        "defensa": "0"
+    },
+    "tyler1": {
+        "nombre": "Tyler1",
+        "edad": "49",
+        "vida": "90",
+        "escudo": "0",
+        "mana": "0",
+        "ataque": "90",
+        "defensa": "0"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "bolsonaro": {
+        "nombre": "BolsonArO",
+        "edad": "50",
+        "vida": "100",
+        "escudo": "60",
+        "mana": "20",
+        "ataque": "90",
+        "defensa": "100"
+    },
+    "nemesis": {
+        "nombre": "Nemesis",
+        "edad": "35",
+        "vida": "150",
+        "escudo": "70",
+        "mana": "0",
+        "ataque": "80",
+        "defensa": "110"
+    },
+    "imaqtpie": {
+        "nombre": "Imaqtpie",
+        "edad": "25",
+        "vida": "50",
+        "escudo": "50",
+        "mana": "20",
+        "ataque": "90",
+        "defensa": "60"
+    }
+}

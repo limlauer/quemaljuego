@@ -322,7 +322,7 @@ def pelear():
 #Opciones = {'P': pelear(), 'C': cargar(), 'E': cargarEnem(), 'B': borrar(), 'N': crear(), 'S': exit()}
 salir = 0
 while salir == 0:
-    print('\nQue queres hacer con tu personaje?','- [P]elear', '- [C]argar', '-  Cargar [E]nemigo', '- [N]uevo personaje', '- [B]orrar', '- [S]alir')
+    print('\nQue queres hacer con tu personaje?','- [P]elear', '- [C]argar', '-  Cargar [E]nemigo', '- [N]uevo personaje', '- [B]orrar', '- [S]alir\n')
     opcion = input()
     if opcion not in "PCENBS" or len(opcion) != 1:
         print('Imposible amigo')
