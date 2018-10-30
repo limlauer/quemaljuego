@@ -1,16 +1,47 @@
 import os
+import optparse
 from random import randint
 from random import choice
 from time import sleep
+import json
 
 personaje = {'nombre': '', 'edad': 0, 'vida': 0, 'escudo': 0, 'mana': 0, 'ataque': 0, 'defensa': 0}
-enemigo = {'nombre': 'un pibe de dynamo', 'edad': 17, 'vida': 40, 'escudo': 10, 'mana': 0, 'ataque': 20, 'defensa': 30}
+enemigo = {'nombre': '', 'edad': 0, 'vida': 0, 'escudo': 0, 'mana': 0, 'ataque': 0, 'defensa': 0}
 personajeTEMP = {'nombre': '', 'edad': 0, 'vida': 0, 'escudo': 0, 'mana': 0, 'ataque': 0, 'defensa': 0}
-enemigoTEMP = {'nombre': 'un pibe de dynamo', 'edad': 17, 'vida': 40, 'escudo': 10, 'mana': 0, 'ataque': 20, 'defensa': 30}
+enemigoTEMP = {'nombre': '', 'edad': 0, 'vida': 0, 'escudo': 0, 'mana': 0, 'ataque': 0, 'defensa': 0}
 
 
 def limpiar():
     print('\n' *100)
+
+def estado():
+    print('''{:>18} | {:<}
+            -> Vida       {:>3}  |  {:<3}
+            -> Escudo     {:>3}  |  {:<3}
+            -> Mana       {:>3}  |  {:<3}
+            -> Ataque     {:>3}  |  {:<3}
+            -> Defensa    {:>3}  |  {:<3}'''.format(enemigoTEMP['nombre'], personajeTEMP['nombre'], enemigoTEMP['vida'],
+                                                    personajeTEMP['vida'], enemigoTEMP['escudo'], personajeTEMP['escudo'],
+                                                    enemigoTEMP['mana'], personajeTEMP['mana'], enemigoTEMP['ataque'],
+                                                    personajeTEMP['ataque'], enemigoTEMP['defensa'], personajeTEMP['defensa']))
+
+def estadoPersonaje():
+    print('''{}, {} años.
+    -> Vida       {:>3}/100
+    -> Escudo     {:>3}/100
+    -> Mana       {:>3}/100
+    -> Ataque     {:>3}/100
+    -> Defensa    {:>3}/100'''.format(personajeTEMP['nombre'], personajeTEMP['edad'], personajeTEMP['vida'], personajeTEMP['escudo'], personajeTEMP['mana'],
+               personajeTEMP['ataque'], personajeTEMP['defensa']))
+
+def estadoEnemigo():
+    print('''{}, {} años.
+    -> Vida       {:>3}/100
+    -> Escudo     {:>3}/100
+    -> Mana       {:>3}/100
+    -> Ataque     {:>3}/100
+    -> Defensa    {:>3}/100'''.format(enemigoTEMP['nombre'], enemigoTEMP['edad'], enemigoTEMP['vida'], enemigoTEMP['escudo'], enemigoTEMP['mana'],
+               enemigoTEMP['ataque'], enemigoTEMP['defensa']))
 
 def guardar(vida, escudo, mana, ataque, defensa):
     guardado = 0
@@ -33,7 +64,8 @@ def cargar():
     global personaje
     cargado = 0
     while cargado == 0:
-        limpiar()
+        #limpiar()
+        print('# CARGAR PERSONAJE')
         print('Estos son los personajes que tenes:')
         print(os.listdir(os.path.dirname(__file__) + '/personajes/'))
         cargar = input('Cual queres cargar? ')
@@ -60,7 +92,7 @@ def cargar():
             personajeTEMP['ataque'] = lineas[5].rstrip('\n')
             personajeTEMP['defensa'] = lineas[6].rstrip('\n')
 
-            print('Nombre: ' + personaje['nombre'] + '\nEdad: ' + personaje['edad'] + '\nVida: ' + personaje['vida'] + '\nEscudo: ' + personaje['escudo'] + '\nMana: ' + personaje['mana'] + '\nAtaque: ' + personaje['ataque'] + '\nDefensa: ' + personaje['defensa'])
+            estadoPersonaje()
             archivo.close()
             print('Listo pibe, ya cargue tu personaje choto')
             cargado = 1
@@ -71,7 +103,8 @@ def cargarEnem():
     global enemigo
     cargado = 0
     while cargado == 0:
-        limpiar()
+        # limpiar()
+        print('# CARGAR ENEMIGO')
         print('Estos son los enemigos que hay:')
         print(os.listdir(os.path.dirname(__file__) + '/enemigos/'))
         cargar = input('Cual enemigo queres cargar? ')
@@ -98,7 +131,7 @@ def cargarEnem():
             enemigoTEMP['ataque'] = lineas[5].rstrip('\n')
             enemigoTEMP['defensa'] = lineas[6].rstrip('\n')
 
-            print('Nombre: ' + enemigo['nombre'] + '\nEdad: ' + enemigo['edad'] + '\nVida: ' + enemigo['vida'] + '\nEscudo: ' + enemigo['escudo'] + '\nMana: ' + enemigo['mana'] + '\nAtaque: ' + enemigo['ataque'] + '\nDefensa: ' + enemigo['defensa'])
+            estadoEnemigo()
             archivo.close()
             print('Listo pibe, ya cargue tu enemigo')
             cargado = 1
@@ -172,95 +205,144 @@ def borrar():
                 print(path)
                 print('No existe ese personaje, capo')
 
+def curarse():
+    manaActual = int(personajeTEMP['mana'])
+    vidaActual = int(personajeTEMP['vida'])
+    if manaActual > 0:
+        print('Aplican2 esas vendas para curarte 10 de vida...')
+        sleep(1)
+        manaActual -= 10
+        vidaActual += 10
+        personajeTEMP['mana'] = manaActual
+        personajeTEMP['vida'] = vidaActual
+        # MUESTRO COMO QUEDO TODO HASTA AHORA
+        estado()
+    else:
+        print('Mana insuficiente maestro que mierda te pensas no es gratis esto')
+
+def atacar():
+    # CALCULO EL VALOR DE MI ATAQUE
+    print('Calculando tu ataque...')
+    sleep(1)
+    ranAtaque = randint(0, 100)
+    ranAtaquePer = randint(0, int(personajeTEMP['ataque']))
+    AtaqueFinal = ranAtaquePer - ranAtaque
+    if AtaqueFinal < 0:  # Si es negativo lo hago 0, re triste
+        AtaqueFinal = 0
+    print('Tu intento de ataque es de: {}'.format(str(AtaqueFinal)))
+
+    # CALCULO EL VALOR DE LA DEFENSA DEL ENEMIGO
+    ranDefensa = randint(0, 100)
+    ranDefensaEne = randint(0, int(enemigoTEMP['defensa']))
+    DefensaFinal = ranDefensaEne - ranDefensa
+    if DefensaFinal < 0:
+        DefensaFinal = 0
+    print('La defensa del enemigo es de: {}'.format(str(DefensaFinal)))
+
+    # CALCULO EL VALOR DEL ESCUDO DEL ENEMIGO
+    ranEscudo = randint(0, 100)
+    ranEscudoEne = randint(0, int(enemigoTEMP['escudo']))
+    EscudoFinal = (ranEscudoEne - ranEscudo) / 2
+    if EscudoFinal < 0:
+        EscudoFinal = 0
+    print('El escudo del enemigo es de: {}'.format(str(EscudoFinal)))
+
+    # CALCULO EL ATAQUE Y MODIFICO LOS VALORES
+    ataqueTotal = AtaqueFinal - DefensaFinal - EscudoFinal
+    if ataqueTotal < 0:
+        ataqueTotal = 0
+        print('No hiciste un carajo de daño. Tu ataque total fue de 0')
+    enemigoTEMP['vida'] = int(enemigoTEMP['vida']) - int(ataqueTotal)
+
+    # MUESTRO COMO QUEDO TODO HASTA AHORA
+    estado()
+
+    # GANASTE? TERMINAR ESTO Y PROBARLO
+    if int(enemigoTEMP['vida']) < 1:
+        print('Le ganaste a {}, sos alto crack amigo'.format(enemigoTEMP['nombre']))
+        correr = 1
+    # HASTA ACA
+
+def magia():
+    manaActual = int(personajeTEMP['mana'])
+    if manaActual > 0:
+        # CALCULO EL VALOR DE MI ATAQUE CON MAGIA
+        print('Calculando tu ataque...')
+        sleep(1)
+        ranAtaque = randint(0, 100)
+        ranAtaquePer = randint(0, int(personajeTEMP['ataque']))
+        AtaqueFinal = (ranAtaquePer - ranAtaque) * 1.25
+        if AtaqueFinal < 0:  # Si es negativo lo hago 0, re triste
+            AtaqueFinal = 0
+        print('Tu intento de ataque es de: {}'.format(str(AtaqueFinal)))
+
+        # CALCULO EL VALOR DE LA DEFENSA DEL ENEMIGO
+        ranDefensa = randint(0, 100)
+        ranDefensaEne = randint(0, int(enemigoTEMP['defensa']))
+        DefensaFinal = ranDefensaEne - ranDefensa
+        if DefensaFinal < 0:
+            DefensaFinal = 0
+        print('La defensa del enemigo es de: {}'.format(str(DefensaFinal)))
+
+        # CALCULO EL VALOR DEL ESCUDO DEL ENEMIGO
+        print('El escudo no te defiende de la magia imbecil de mierda')
+
+        # CALCULO EL ATAQUE Y MODIFICO LOS VALORES
+        ataqueTotal = AtaqueFinal - DefensaFinal
+        if ataqueTotal < 0:
+            ataqueTotal = 0
+            print('No hiciste un carajo de daño. Tu ataque total fue de 0')
+        enemigoTEMP['vida'] = int(enemigoTEMP['vida']) - int(ataqueTotal)
+        manaActual -= 10
+        personajeTEMP['mana'] = manaActual
+        # MUESTRO COMO QUEDO TODO HASTA AHORA
+        estado()
+
+        # GANASTE? TERMINAR ESTO Y PROBARLO
+        if int(enemigoTEMP['vida']) < 1:
+            print('# Le ganaste a {}, sos alto crack amigo'.format(enemigoTEMP['nombre']))
+            correr = 1
+        # HASTA ACA
+    else:
+        print("# No tenes mana bro")
+
+
 def pelear():
     global personaje
     global personajeTEMP
     global enemigo
     global enemigoTEMP
     limpiar()
-    print("ESTAS EN UNA PELEA BRODER")
-    print("*************************")
-    print('**Estas peleando con {}. Vida {} - Escudo {} - Mana {} - Ataque {} - Defensa {}'.format(enemigo['nombre'],
+    print("# ESTAS EN UNA PELEA BRODER")
+    print('# Peleando con {}. Vida {} - Escudo {} - Mana {} - Ataque {} - Defensa {}'.format(enemigo['nombre'],
            enemigo['vida'],enemigo['escudo'],enemigo['mana'],enemigo['ataque'],enemigo['defensa']))
-    print("*************************")
     print(str(enemigo['nombre']).upper() + ': listo para pelear hijo de puta?')
-    print("")
     correr = 0
     while correr == 0:
-        opcion = input('''Que mierda queres hacer?
+        opcion = input('''# Que mierda queres hacer?
         - [A]tacar
+        - [M]agia
         - [C]urarte
-        - [R]endirte
-           ''')
-        if opcion not in "ACR" or len(opcion) != 1:
+        - [R]endirte''')
+        if opcion not in "ACMR" or len(opcion) != 1:
             print('Imposible amigo')
         elif opcion == 'A':
-            #CALCULO EL VALOR DE MI ATAQUE
-            print('Calculando tu ataque...')
-            sleep(1)
-            ranAtaque = randint(0, 100)
-            ranAtaquePer = randint(0, int(personajeTEMP['ataque']))
-            AtaqueFinal = ranAtaquePer - ranAtaque
-            if AtaqueFinal < 0: #Si es negativo lo hago 0, re triste
-                AtaqueFinal = 0
-            print('Tu intento de ataque es de: {}'.format(str(AtaqueFinal)))
-
-            #CALCULO EL VALOR DE LA DEFENSA DEL ENEMIGO
-            ranDefensa = randint(0,100)
-            ranDefensaEne = randint(0, int(enemigoTEMP['defensa']))
-            DefensaFinal = ranDefensaEne - ranDefensa
-            if DefensaFinal < 0:
-                DefensaFinal = 0
-            print('La defensa del enemigo es de: {}'.format(str(DefensaFinal)))
-            #CALCULO EL VALOR DEL ESCUDO DEL ENEMIGO
-            ranEscudo = randint(0,100)
-            ranEscudoEne = randint(0, int(enemigoTEMP['escudo']))
-            EscudoFinal = (ranEscudoEne - ranEscudo) / 2
-            if EscudoFinal < 0:
-                EscudoFinal = 0
-            print('El escudo del enemigo es de: {}'.format(str(EscudoFinal)))
-            #CALCULO EL ATAQUE Y MODIFICO LOS VALORES
-            ataqueTotal = AtaqueFinal - DefensaFinal - EscudoFinal
-            if ataqueTotal < 0:
-                ataqueTotal = 0
-                print('No hiciste un carajo de daño. Tu ataque total fue de 0')
-            enemigoTEMP['vida'] = int(enemigoTEMP['vida']) - int(ataqueTotal)
-            #MUESTRO COMO QUEDO TODO HASTA AHORA
-            print('Info de {}.\n Vida {} - Escudo {} - Mana {} - Ataque {} - Defensa {}'.format(
-                enemigoTEMP['nombre'],
-                enemigoTEMP['vida'], enemigoTEMP['escudo'], enemigoTEMP['mana'], enemigoTEMP['ataque'], enemigoTEMP['defensa']))
-            print('Info de {}.\n Vida {} - Escudo {} - Mana {} - Ataque {} - Defensa {}'.format(
-                personajeTEMP['nombre'],
-                personajeTEMP['vida'], personajeTEMP['escudo'], personajeTEMP['mana'], personajeTEMP['ataque'],
-                personajeTEMP['defensa']))
-
-            #GANASTE? TERMINAR ESTO Y PROBARLO
-            print('vida del chabon {}'.format(str(enemigoTEMP['vida'])))
-            if int(enemigoTEMP['vida']) < 1:
-                print('Le ganaste a {}, sos alto crack amigo'.format(enemigoTEMP['nombre']))
-                correr = 1
-            #HASTA ACA
-
+            atacar()
         elif opcion == 'C':
-            cargar()
+            curarse()
+        elif opcion == 'M':
+            magia()
         elif opcion == 'R':
             print(str(enemigo['nombre']) + " dice que sos un puto porque te cagaste de pelear. Nos vemos bobo")
             correr = 1
 
 #MAIN
+#Hice un diccionario con las opciones, y ahora? xdxDdxDxD
+#Opciones = {'P': pelear(), 'C': cargar(), 'E': cargarEnem(), 'B': borrar(), 'N': crear(), 'S': exit()}
 salir = 0
 while salir == 0:
-    print("")
-    print("*****")
-    opcion = input('''Que queres hacer con tu personaje?
-    - [P]elear
-    - [C]argar
-    -  Cargar [E]nemigo
-    - [N]uevo personaje
-    - [B]orrar
-    - [S]alir
-       ''')
-
+    print('\nQue queres hacer con tu personaje?','- [P]elear', '- [C]argar', '-  Cargar [E]nemigo', '- [N]uevo personaje', '- [B]orrar', '- [S]alir')
+    opcion = input()
     if opcion not in "PCENBS" or len(opcion) != 1:
         print('Imposible amigo')
     elif opcion == 'E':
